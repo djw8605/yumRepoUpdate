@@ -5,7 +5,7 @@ import optparse
 import copy
 import make_table
 
-repoquery = 'repoquery -a --qf "%%{name} %%{version} %%{release}" --disablerepo=* --enablerepo=%s'
+repoquery = 'repoquery -a --qf "%%{name} %%{version} %%{release}" --disablerepo=* --enablerepo=%(repo)s'
 
 
 def GetPreviousRPMs(old_file):
@@ -26,6 +26,7 @@ def GetPreviousRPMs(old_file):
 def GetCurrentRPMs(repo):
     rpm_dict = {}
     cmd = repoquery % {'repo': repo}
+    print cmd
     current_repo = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (stdout, stderr) = current_repo.communicate()
     for line in stdout.split("\n"):
@@ -34,7 +35,9 @@ def GetCurrentRPMs(repo):
             rpm_dict[name] = (release, version)
         except:
             print "Error unpacking line: %s" % line
-
+    
+    if len(rpm_dict) == 0:
+        print "Didn't get any output"
     return rpm_dict
 
 
@@ -74,6 +77,23 @@ def WriteCurrentRPMs(old_file, current_rpms):
         f.write("%s %s %s\n" % (rpm, current_rpms[rpm][0], current_rpms[rpm][1]))
     f.close()
 
+
+def MakeTable(new_rpms, new_versions, deleted_rpms):
+    table = make_table.Table()
+    table.setHeaders(["RPM Name"])
+
+    for rpm in new_rpms.keys():
+        table.addRow([rpm])
+
+    for rpm in new_versions.keys():
+        table.addRow(["Update RPMs: %s" % rpm])
+
+    for rpm in deleted_rpms.keys():
+        table.addRow(["Deleted RPMs: %s" % rpm])
+
+    print table.plainText()
+
+
 def AddOptions(parser):
     parser.add_option("-f", "--file", dest="oldfile", help="Old RPMs file location")
     parser.add_option("-r", "--repo", dest="repo", help="Repo to query")
@@ -84,7 +104,8 @@ def main():
     AddOptions(parser)
 
     (options, args) = parser.parse_args()
-
+    
+    print "Querying repo: %s" % options.repo
     current_rpms = GetCurrentRPMs(options.repo)
     previous_rpms = GetPreviousRPMs(options.oldfile)
     saved_current_rpms = copy.deepcopy(current_rpms)
@@ -92,7 +113,8 @@ def main():
     (new_rpms, new_version, deleted_rpms) = CompareRPMs(current_rpms, previous_rpms)
 
     WriteCurrentRPMs(options.oldfile, current_rpms)
-
+    
+    MakeTable(new_rpms, new_version, deleted_rpms)
     
 
 if __name__ == "__main__":
