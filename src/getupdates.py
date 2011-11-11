@@ -88,9 +88,9 @@ def main():
     previous_rpms = GetPreviousRPMs(options.oldfile)
     saved_current_rpms = copy.deepcopy(current_rpms)
 
-    rpm_diff = CompareRPMs(current_rpms, previous_rpms)
+    (new_rpms, new_version, deleted_rpms) = CompareRPMs(current_rpms, previous_rpms)
 
-    (new_rpms, new_version, deleted_rpms) = WriteCurrentRPMs(options.oldfile, current_rpms)
+    WriteCurrentRPMs(options.oldfile, current_rpms)
 
 
 
