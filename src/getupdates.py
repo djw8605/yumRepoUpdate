@@ -3,8 +3,9 @@
 import subprocess
 import optparse
 import copy
+import make_table
 
-repoquery = "repoquery -a --qf \"%{name} %{version} %{release}\" --disablerepo=* --enablerepo=%(repo)s"
+repoquery = 'repoquery -a --qf "%%{name} %%{version} %%{release}" --disablerepo=* --enablerepo=%s'
 
 
 def GetPreviousRPMs(old_file):
@@ -24,7 +25,7 @@ def GetPreviousRPMs(old_file):
 
 def GetCurrentRPMs(repo):
     rpm_dict = {}
-    cmd = repoquery % { 'repo': repo }
+    cmd = repoquery % {'repo': repo}
     current_repo = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (stdout, stderr) = current_repo.communicate()
     for line in stdout.split("\n"):
@@ -92,7 +93,7 @@ def main():
 
     WriteCurrentRPMs(options.oldfile, current_rpms)
 
-
+    
 
 if __name__ == "__main__":
     main()
