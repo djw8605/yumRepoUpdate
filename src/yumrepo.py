@@ -11,8 +11,16 @@ class YumRepo(yum.YumBase):
         p1 = self.doPackageLists('all')
         self.packages = all_packages = p1.available
 
-    def getPackages():
+        self.package_name = {}
+        for package in self.packages:
+            self.package_name[package.name] = package
+
+    def getPackages(self):
         return self.packages
+
+    def getPackageNames(self):
+        return self.package_name
+
 
 
 
