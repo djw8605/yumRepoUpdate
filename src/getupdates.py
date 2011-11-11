@@ -82,7 +82,7 @@ def GetMostRecentChangeLog(rpm_list):
     return rpm_changelog
 
 
-def MakeTable(new_rpms, new_versions, deleted_rpms, repo):
+def MakeTable(new_rpms, new_versions, deleted_rpms, repo, email):
     table = make_table.Table(add_numbers = False)
     table.setHeaders(["RPM Name", "Changelog entry"])
 
@@ -116,7 +116,7 @@ def MakeTable(new_rpms, new_versions, deleted_rpms, repo):
         table.addRow([rpm, ""])
 
     log = logging.getLogger("test")
-    report.sendEmail(("Derek Weitzel", "dweitzel@cse.unl.edu"), (["Derek Weitzel"], ["dweitzel@cse.unl.edu"]), "cse.unl.edu", "%s: RPM Changes" % repo, table.plainText(), table.html(), log)
+    report.sendEmail(("Derek Weitzel", "dweitzel@cse.unl.edu"), ([email], [email]), "localhost", "%s: RPM Changes" % repo, table.plainText(), table.html(), log)
     #print table.plainText()
 
 
@@ -125,6 +125,7 @@ def MakeTable(new_rpms, new_versions, deleted_rpms, repo):
 def AddOptions(parser):
     parser.add_option("-f", "--file", dest="oldfile", help="Old RPMs file location")
     parser.add_option("-r", "--repo", dest="repo", help="Repo to query")
+    parser.add_option("-e", "--email", dest="email", help="Email addres to send the report")
     
 
 def main():
@@ -145,7 +146,7 @@ def main():
     new_rpms_changelog = GetMostRecentChangeLog(new_rpms)
     new_versions_changelog = GetMostRecentChangeLog(new_version)
 
-    MakeTable(new_rpms_changelog, new_versions_changelog, deleted_rpms, options.repo)
+    MakeTable(new_rpms_changelog, new_versions_changelog, deleted_rpms, options.repo, options.email)
     
 
 if __name__ == "__main__":
