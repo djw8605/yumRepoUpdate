@@ -73,11 +73,9 @@ def WriteCurrentRPMs(old_file, current_rpms):
 def GetMostRecentChangeLog(rpm_list):
     rpm_changelog = {}
     
-    print rpm_list
     for rpm in rpm_list.keys():
         if len(rpm_list[rpm].changelog) > 0:
             rpm_changelog[rpm_list[rpm].name] = rpm_list[rpm].changelog[0]
-            print rpm_list[rpm].changelog[0]
         else:
             rpm_changelog[rpm_list[rpm].name] = ""
 
