@@ -82,7 +82,7 @@ def GetMostRecentChangeLog(rpm_list):
     return rpm_changelog
 
 
-def MakeTable(new_rpms, new_versions, deleted_rpms):
+def MakeTable(new_rpms, new_versions, deleted_rpms, repo):
     table = make_table.Table(add_numbers = False)
     table.setHeaders(["RPM Name", "Changelog entry"])
 
@@ -116,7 +116,7 @@ def MakeTable(new_rpms, new_versions, deleted_rpms):
         table.addRow([rpm, ""])
 
     log = logging.getLogger("test")
-    report.sendEmail(("Derek Weitzel", "dweitzel@cse.unl.edu"), (["Derek Weitzel"], ["dweitzel@cse.unl.edu"]), "cse.unl.edu", "RPM Changes", table.plainText(), table.html(), log)
+    report.sendEmail(("Derek Weitzel", "dweitzel@cse.unl.edu"), (["Derek Weitzel"], ["dweitzel@cse.unl.edu"]), "cse.unl.edu", "%s: RPM Changes" % repo, table.plainText(), table.html(), log)
     #print table.plainText()
 
 
@@ -145,7 +145,7 @@ def main():
     new_rpms_changelog = GetMostRecentChangeLog(new_rpms)
     new_versions_changelog = GetMostRecentChangeLog(new_version)
 
-    MakeTable(new_rpms_changelog, new_versions_changelog, deleted_rpms)
+    MakeTable(new_rpms_changelog, new_versions_changelog, deleted_rpms, options.repo)
     
 
 if __name__ == "__main__":
