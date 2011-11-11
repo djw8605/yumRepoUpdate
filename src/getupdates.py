@@ -90,7 +90,7 @@ def MakeTable(new_rpms, new_versions, deleted_rpms):
     for rpm in new_rpms.keys():
         combined_changelog = "\n".join(new_rpms[rpm][1:3])
         split_changelog = combined_changelog.split("\n")
-        table.addRow([rpm, split_changelog[0].strip()])
+        table.addRow([rpm, split_changelog[0]])
         split_changelog.pop(0)
         for line in split_changelog:
             table.addRow(["", line])
@@ -102,7 +102,7 @@ def MakeTable(new_rpms, new_versions, deleted_rpms):
     for rpm in new_versions.keys():
         combined_changelog = "\n".join(new_versions[rpm][1:3])
         split_changelog = combined_changelog.split("\n")
-        table.addRow([rpm, split_changelog[0].strip()])
+        table.addRow([rpm, split_changelog[0]])
         split_changelog.pop(0)
         for line in split_changelog:
             table.addRow(["", line])
