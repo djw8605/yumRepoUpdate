@@ -59,7 +59,7 @@ def CompareRPMs(current_rpms, previous_rpms):
             del previous_rpms[rpm]
 
 
-    # Anything left over in the dictionaries are new or removed rpms
+    # Anything left over in the dictionaries are removed rpms
     for rpm in previous_rpms.keys():
         print "RPM was deleted: %s" % rpm
         deleted_rpms[rpm] = previous_rpms[rpm]
@@ -92,7 +92,6 @@ def main():
 
     (new_rpms, new_version, deleted_rpms) = WriteCurrentRPMs(options.oldfile, current_rpms)
 
-    PrintNewVersions
 
 
 if __name__ == "__main__":
