@@ -7,7 +7,7 @@ class YumRepo(yum.YumBase):
         yum.YumBase.__init__(self)
         
         self.repos.disableRepo("*")
-        self.repos.enableRepo("osg-testing")
+        self.repos.enableRepo(repo)
         p1 = self.doPackageLists('all')
         self.packages = all_packages = p1.available
 
