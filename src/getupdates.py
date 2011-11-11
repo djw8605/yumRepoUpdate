@@ -4,6 +4,9 @@ import subprocess
 import optparse
 import copy
 import make_table
+import report
+
+import logging
 
 repoquery = 'repoquery -a --qf "%%{name} %%{version} %%{release}" --disablerepo=* --enablerepo=%(repo)s'
 
@@ -91,13 +94,13 @@ def GetMostRecentChangeLog(rpm_list, repo):
     return rpm_changelog
 
 def MakeTable(new_rpms, new_versions, deleted_rpms):
-    table = make_table.Table()
+    table = make_table.Table(add_numbers = False)
     table.setHeaders(["RPM Name", "Changelog entry"])
 
     table.addRow(["New RPMs", ""])
     for rpm in new_rpms.keys():
         split_changelog = new_rpms[rpm].split("\n")
-        table.addRow([rpm, split_changelog[0]])
+        table.addRow([rpm, split_changelog[0].strip()])
         split_changelog.pop(0)
         for line in split_changelog:
             table.addRow(["", line])
@@ -107,7 +110,7 @@ def MakeTable(new_rpms, new_versions, deleted_rpms):
 
     for rpm in new_versions.keys():
         split_changelog = new_versions[rpm].split("\n")
-        table.addRow([rpm, split_changelog[0]])
+        table.addRow([rpm, split_changelog[0].strip()])
         split_changelog.pop(0)
         for line in split_changelog:
             table.addRow(["", line])
@@ -119,7 +122,9 @@ def MakeTable(new_rpms, new_versions, deleted_rpms):
     for rpm in deleted_rpms.keys():
         table.addRow([rpm, ""])
 
-    print table.plainText()
+    log = logging.getLogger("test")
+    report.sendEmail(("Derek Weitzel", "dweitzel@cse.unl.edu"), (["Derek Weitzel"], ["dweitzel@cse.unl.edu"]), "cse.unl.edu", "RPM Changes", table.plainText(), table.html(), log)
+#    print table.plainText()
 
 
 
