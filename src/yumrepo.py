@@ -24,6 +24,5 @@ class YumRepo(yum.YumBase):
 
 
 
-YumRepo("osg-testing")
 
 
