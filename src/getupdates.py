@@ -7,6 +7,7 @@ import make_table
 import report
 
 import logging
+import yumrepo
 
 repoquery = 'repoquery -a --qf "%%{name} %%{version} %%{release}" --disablerepo=* --enablerepo=%(repo)s'
 
